@@ -40,7 +40,7 @@ export function FitnessSurveyForm() {
 
   function onSubmit(values: FitnessSurvey) {
     const base64Answers = Buffer.from(JSON.stringify(values)).toString("base64")
-    window.open(`/api/assistant/plan?answers=${base64Answers}`)
+    window.open(`/api?answers=${base64Answers}`)
   }
 
   return (
