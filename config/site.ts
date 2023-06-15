@@ -1,9 +1,8 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Next.js",
-  description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+  name: "Chef GPT",
+  description: "Your AI Personal Trainer and Sous Chef.",
   mainNav: [
     {
       title: "Home",
@@ -11,8 +10,8 @@ export const siteConfig = {
     },
   ],
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
+    twitter: "https://github.com/d-mooers/trainer-bot",
+    github: "https://github.com/d-mooers/trainer-bot",
+    docs: "https://github.com/d-mooers/trainer-bot",
   },
 }
