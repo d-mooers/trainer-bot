@@ -187,81 +187,75 @@ const userInfo = {
 }
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const answersBase64 = searchParams.get("answers")
-    if (!answersBase64) {
-      return new Response(
-        JSON.stringify({
-          message: "Please provide answers as a base64 encoded string",
-        }),
-        {
-          status: 400,
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      )
-    }
-    const answers: typeof userInfo = JSON.parse(
-      Buffer.from(answersBase64, "base64").toString("utf-8")
-    )
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo-0613",
-      messages: [
-        {
-          role: "system",
-          content: `Assistant is a world-renowned personal trainer and chef.  Assistant makes excellent workout plans tailored specifically to user needs.`,
-        },
-        {
-          role: "assistant",
-          content:
-            "I am here to make you a specic workout plan, but I need some of your info first! Please provide your info as a JSON",
-        },
-        {
-          role: "user",
-          content: JSON.stringify(answers),
-        },
-        {
-          role: "user",
-          content: `Use function call to generate my workout plan`,
-        },
-      ],
-      functions: [
-        {
-          name: "create_weekly_workout_plan",
-          description:
-            "Accepts a json object that describes the workout plan for the week, and adds it to the user profile",
-          parameters: planFormat,
-        },
-      ],
-      temperature: 1,
-    })
-    const message = JSON.parse(
-      completion.data.choices[0].message?.content ?? "{}"
-    )
-    const functionCall = completion.data.choices[0].message?.function_call
-    const functionName = functionCall?.name
-    const functionParameters = JSON.parse(functionCall?.arguments ?? "{}")
-
+  const { searchParams } = new URL(request.url)
+  const answersBase64 = searchParams.get("answers")
+  if (!answersBase64) {
     return new Response(
       JSON.stringify({
-        message,
-        functionName,
-        functionParameters,
+        message: "Please provide answers as a base64 encoded string",
       }),
       {
-        status: 200,
+        status: 400,
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "content-type": "application/json",
         },
       }
     )
-  } catch (e) {
-    if (isAxiosError(e)) {
-      console.log(e.message, e.response?.data)
-    }
   }
+  const answers: typeof userInfo = JSON.parse(
+    Buffer.from(answersBase64, "base64").toString("utf-8")
+  )
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo-0613",
+    messages: [
+      {
+        role: "system",
+        content: `Assistant is a world-renowned personal trainer and chef.  Assistant makes excellent workout plans tailored specifically to user needs.`,
+      },
+      {
+        role: "assistant",
+        content:
+          "I am here to make you a specic workout plan, but I need some of your info first! Please provide your info as a JSON",
+      },
+      {
+        role: "user",
+        content: JSON.stringify(answers),
+      },
+      {
+        role: "user",
+        content: `Use function call to generate my workout plan`,
+      },
+    ],
+    functions: [
+      {
+        name: "create_weekly_workout_plan",
+        description:
+          "Accepts a json object that describes the workout plan for the week, and adds it to the user profile",
+        parameters: planFormat,
+      },
+    ],
+    temperature: 1,
+  })
+  const message = JSON.parse(
+    completion.data.choices[0].message?.content ?? "{}"
+  )
+  const functionCall = completion.data.choices[0].message?.function_call
+  const functionName = functionCall?.name
+  const functionParameters = JSON.parse(functionCall?.arguments ?? "{}")
+
+  return new Response(
+    JSON.stringify({
+      message,
+      functionName,
+      functionParameters,
+    }),
+    {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    }
+  )
 }
