@@ -1,15 +1,3 @@
-import { isAxiosError } from "axios"
-import { config as dconfig } from "dotenv"
-import { Configuration, OpenAIApi } from "openai"
-
-dconfig()
-
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(config)
-
 const questionFormat = {
   type: "object",
   properties: {
@@ -205,7 +193,7 @@ export async function GET(request: Request) {
   const answers: typeof userInfo = JSON.parse(
     Buffer.from(answersBase64, "base64").toString("utf-8")
   )
-  const completion = await openai.createChatCompletion({
+  const openAiPayload = {
     model: "gpt-3.5-turbo-0613",
     messages: [
       {
@@ -235,11 +223,34 @@ export async function GET(request: Request) {
       },
     ],
     temperature: 1,
+  }
+
+  const query = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify(openAiPayload),
   })
-  const message = JSON.parse(
-    completion.data.choices[0].message?.content ?? "{}"
-  )
-  const functionCall = completion.data.choices[0].message?.function_call
+
+  if (!query.ok) {
+    return new Response(
+      JSON.stringify({
+        message: "OpenAI API error",
+      }),
+      {
+        status: query.status,
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    )
+  }
+  const data = await query.json()
+
+  const message = JSON.parse(data.choices[0].message?.content ?? "{}")
+  const functionCall = data.choices[0].message?.function_call
   const functionName = functionCall?.name
   const functionParameters = JSON.parse(functionCall?.arguments ?? "{}")
 
@@ -259,3 +270,5 @@ export async function GET(request: Request) {
     }
   )
 }
+
+export const runtime = "edge"

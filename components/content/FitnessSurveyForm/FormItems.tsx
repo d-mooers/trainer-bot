@@ -1,4 +1,3 @@
-import { SelectContent } from "@radix-ui/react-select"
 import { Control, Path } from "react-hook-form"
 
 import {
@@ -12,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import {
   Select,
+  SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
