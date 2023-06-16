@@ -40,7 +40,7 @@ export function FitnessSurveyForm() {
 
   function onSubmit(values: FitnessSurvey) {
     const base64Answers = Buffer.from(JSON.stringify(values)).toString("base64")
-    window.open(`/api?answers=${base64Answers}`)
+    window.open(`/home/${base64Answers}`)
   }
 
   return (
@@ -63,6 +63,12 @@ export function FitnessSurveyForm() {
           name="weight"
           label="Weight"
           description="How much do you weigh? (enter in __ lbs, I do not have validation set up yet)"
+        />
+        <ShortAnswerInput
+          control={form.control}
+          name="sex"
+          label="Sex"
+          description="What is your sex? Please try to limit number of words."
         />
         <MultipleChoiceInput
           control={form.control}

@@ -52,6 +52,7 @@ export const fitnessSurveySchema = z.object({
     .refine((data) => data > 0, "You must be 18 or older"),
   height: z.string().refine((data) => data !== "", "You must enter a height"),
   weight: z.string().refine((data) => data !== "", "You must enter a weight"),
+  sex: z.string().refine((data) => data !== "", "You must enter a sex"),
   activityLevel: z.nativeEnum(ActivityLevel),
   dietType: z.nativeEnum(DietType),
   fitnessGoalType: z.nativeEnum(FitnessGoalType),

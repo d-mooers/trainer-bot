@@ -88,20 +88,6 @@ const exerciseFormat = {
   },
 }
 
-const planFormatAgain = {
-  type: "object",
-  properties: {
-    plan: {
-      type: "object",
-      properties: {
-        day: {
-          type: "string",
-        },
-      },
-    },
-  },
-}
-
 const planFormat = {
   type: "object",
   properties: {
@@ -194,7 +180,7 @@ export async function GET(request: Request) {
     Buffer.from(answersBase64, "base64").toString("utf-8")
   )
   const openAiPayload = {
-    model: "gpt-3.5-turbo-0613",
+    model: "gpt-4-0613",
     messages: [
       {
         role: "system",
