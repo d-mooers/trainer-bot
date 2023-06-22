@@ -1,5 +1,8 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { getAnalytics } from "firebase/analytics"
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -7,6 +10,25 @@ import { cn } from "@/lib/utils"
 import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyANA26hq9C4X4vljDpgksBF73hw1L7bLx0",
+  authDomain: "trainer-bot-7e365.firebaseapp.com",
+  projectId: "trainer-bot-7e365",
+  storageBucket: "trainer-bot-7e365.appspot.com",
+  messagingSenderId: "95856861667",
+  appId: "1:95856861667:web:a73f1372b379ae833480d6",
+  measurementId: "G-8JERGK33S9",
+}
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app)
 
 export const metadata: Metadata = {
   title: {
